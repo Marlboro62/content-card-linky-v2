@@ -113,7 +113,7 @@ class ContentCardLinky extends LitElement {
                        </ha-icon>
                       </span>
                       <div class="tooltip">
-                      ${Math.round(attributes.yearly_evolution)}<span class="unit"> %</span><span class="year">par rapport à ${this.previousYear()}</span>
+                      ${Math.round(attributes.yearly_evolution)}<span class="unit"> %</span><span class="year">par rapport à ${this.previousYear(attributes.annual_period_start)}</span>
                           <span class="tooltiptext">A-1 : ${attributes.current_year_last_year}<br>A : ${attributes.current_year}</span>
                       </div>
                     </span>`
@@ -185,7 +185,11 @@ class ContentCardLinky extends LitElement {
                       </span>`
                     : html ``
                    }
-                  
+                  ${this.config.showTempoPieChart
+                    ? this.renderTempoPieChart(attributes)
+                    : html ``
+                   }
+
                 </div>
                 ${this.renderHistory(attributes.daily, attributes.unit_of_measurement, attributes.dailyweek, attributes.dailyweek_cost, attributes.dailyweek_costHC, attributes.dailyweek_costHP, attributes.dailyweek_HC, attributes.dailyweek_HP, attributes.dailyweek_MP, attributes.dailyweek_MP_over, attributes.dailyweek_MP_time, attributes.dailyweek_Tempo, this.config)}
                 ${this.renderEcoWatt(attributes, this.config)}
@@ -772,6 +776,7 @@ class ContentCardLinky extends LitElement {
       showHistory: true,
       showHeader: true,
       showPeakOffPeak: true,
+      showTempoPieChart: false,
       showIcon: false,
       showInTableUnit: false,
       showDayPrice: false,
@@ -816,12 +821,66 @@ class ContentCardLinky extends LitElement {
     return Number.parseFloat(value).toFixed(decimals);
   }
   
-  previousYear() {
+  renderTempoPieChart(attributes) {
+    const blueHC = attributes.tempo_percentage_blue_hc || 0;
+    const blueHP = attributes.tempo_percentage_blue_hp || 0;
+    const whiteHC = attributes.tempo_percentage_white_hc || 0;
+    const whiteHP = attributes.tempo_percentage_white_hp || 0;
+    const redHC = attributes.tempo_percentage_red_hc || 0;
+    const redHP = attributes.tempo_percentage_red_hp || 0;
+
+    const slices = [
+      { label: "Bleu HC", value: blueHC, color: "#009dfa" },
+      { label: "Bleu HP", value: blueHP, color: "#005c94" },
+      { label: "Blanc HC", value: whiteHC, color: "#ffffff" },
+      { label: "Blanc HP", value: whiteHP, color: "#c9c9c9" },
+      { label: "Rouge HC", value: redHC, color: "#ff2700" },
+      { label: "Rouge HP", value: redHP, color: "#a30000" },
+    ];
+
+    let cumulative = 0;
+    const gradientParts = slices.map((slice) => {
+      const start = cumulative;
+      cumulative += slice.value;
+      return `${slice.color} ${start}% ${cumulative}%`;
+    });
+    const gradient = gradientParts.join(", ");
+
+    return html`
+      <div class="tempo-pie-chart-container">
+        <div class="tempo-pie-chart" style="background: conic-gradient(${gradient});"></div>
+        <div class="tempo-pie-legend">
+          ${slices.map((slice) => html`
+            <div class="tempo-pie-legend-item">
+              <span class="tempo-pie-legend-color" style="background:${slice.color};"></span>
+              <span class="tempo-pie-legend-label">${slice.label}</span>
+              <span class="tempo-pie-legend-value">${slice.value}%</span>
+            </div>
+          `)}
+        </div>
+      </div>
+    `;
+  }
+
+  previousYear(annualPeriodStart) {
     var d = new Date();
+    if (annualPeriodStart && annualPeriodStart !== "01-01") {
+      var parts = annualPeriodStart.split("-");
+      var periodMonth = parseInt(parts[0], 10);
+      var periodDay = parseInt(parts[1], 10);
+      var currentMonth = d.getMonth() + 1;
+      var currentDay = d.getDate();
+      var startYear;
+      if (currentMonth > periodMonth || (currentMonth === periodMonth && currentDay >= periodDay)) {
+        startYear = d.getFullYear();
+      } else {
+        startYear = d.getFullYear() - 1;
+      }
+      return (startYear).toString();
+    }
     d.setFullYear(d.getFullYear()-1 );
-    
-    return d.toLocaleDateString('fr-FR', {year: "numeric"});
-  } 
+    return d.toLocaleDateString("fr-FR", {year: "numeric"});
+  }
   
   previousMonth() {
     var d = new Date();
@@ -1111,6 +1170,43 @@ class ContentCardLinky extends LitElement {
     	border: 2px solid var(--divider-color);
     	box-shadow: var(--ha-card-box-shadow,none);
      	text-transform: capitalize;
+      }
+      .tempo-pie-chart-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 8px 0;
+      }
+      .tempo-pie-chart {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 2px solid var(--divider-color);
+        flex-shrink: 0;
+      }
+      .tempo-pie-legend {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.85em;
+      }
+      .tempo-pie-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tempo-pie-legend-color {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        border: 1px solid var(--divider-color);
+      }
+      .tempo-pie-legend-label {
+        flex-grow: 1;
+      }
+      .tempo-pie-legend-value {
+        font-weight: bold;
       }
 	  .tempoday-red {
         color: #ff2700;
