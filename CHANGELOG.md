@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0-beta.2
+
+### Bug Fixes
+
+- Camembert Tempo sur sa propre ligne, sous les évolutions, avec une légende sur deux colonnes : les textes des évolutions ne sont plus écrasés.
+
 ## 0.3.0-beta
 
 ### Features

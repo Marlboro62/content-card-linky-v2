@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "0.3.0-beta";
+const CARD_VERSION = "0.3.0-beta.2";
 // Icône Linky : chemin HACS, remplaçable (page de démonstration)
 const LINKY_ICON = window.CONTENT_CARD_LINKY_CLASSIC_ICON || "/local/community/content-card-linky-v2/icons/linky.svg";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
@@ -199,12 +199,12 @@ class ContentCardLinky extends LitElement {
                       </span>`
                     : html ``
                    }
-                  ${this.config.showTempoPieChart
-                    ? this.renderTempoPieChart(attributes)
-                    : html ``
-                   }
 
                 </div>
+                ${this.config.showTempoPieChart
+                  ? this.renderTempoPieChart(attributes)
+                  : html ``
+                 }
                 ${this.renderHistory(attributes.daily, attributes.unit_of_measurement, attributes.dailyweek, attributes.dailyweek_cost, attributes.dailyweek_costHC, attributes.dailyweek_costHP, attributes.dailyweek_HC, attributes.dailyweek_HP, attributes.dailyweek_MP, attributes.dailyweek_MP_over, attributes.dailyweek_MP_time, attributes.dailyweek_Tempo, this.config)}
                 ${this.renderEcoWatt(attributes, this.config)}
 				${this.renderTempo(attributes, this.config)}
@@ -1324,8 +1324,9 @@ class ContentCardLinky extends LitElement {
       .tempo-pie-chart-container {
         display: flex;
         align-items: center;
-        gap: 16px;
-        padding: 8px 0;
+        justify-content: center;
+        gap: 24px;
+        padding: 8px 0 12px;
       }
       .tempo-pie-chart {
         width: 90px;
@@ -1335,10 +1336,16 @@ class ContentCardLinky extends LitElement {
         flex-shrink: 0;
       }
       .tempo-pie-legend {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 4px 16px;
         font-size: 0.85em;
+      }
+      .tempo-pie-legend-item {
+        white-space: nowrap;
+      }
+      .tempo-pie-caption {
+        grid-column: 1 / -1;
       }
       .tempo-pie-legend-item {
         display: flex;
