@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "1.6.0-beta.2";
+const CARD_VERSION = "1.6.0-beta.3";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
 const CARD_TYPE = "content-card-linky-classic";
 
@@ -489,8 +489,7 @@ class ContentCardLinky extends LitElement {
         `
         <br><span class="cons-val">${this.toFloat(day)} 
                   ${this.config.showInTableUnit 
-                    ? html `
-                      ${unit_of_measurement}`
+                    ? html `<span class="cons-unit">${unit_of_measurement}</span>`
                     : html ``
                    }</span>
        `;
@@ -541,8 +540,7 @@ class ContentCardLinky extends LitElement {
           `
              <br><span class="cons-val">${this.toFloat(valeur, 2)} 
            ${this.config.showInTableUnit 
-                   ? html `
-                     ${unit_of_measurement}`
+                   ? html `<span class="cons-unit">${unit_of_measurement}</span>`
                    : html ``
                   }</span>
           `;
@@ -622,9 +620,12 @@ class ContentCardLinky extends LitElement {
   
   getOneDayNextEcoWatt(ecoWattForecastEntity) {
     let ecoWattForecastList = [];
-    for (let [time, value] of Object.entries(
-      ecoWattForecastEntity.attributes["forecast"] || {}
-    )) {
+    const forecast = ecoWattForecastEntity?.attributes?.["forecast"] || {};
+    if (Object.keys(forecast).length === 0) {
+      // Jour pas encore publie par RTE : 24 cases grises
+      return [...Array(24).keys()].map((hour) => [String(hour).padStart(2, "0"), "grey", "Pas encore publié"]);
+    }
+    for (let [time, value] of Object.entries(forecast)) {
       if (time != undefined) {
         // Heure sur deux chiffres quel que soit le format de la cle :
         // "00 h" (export V1) ou "0h 00min" (export V2)
@@ -704,9 +705,9 @@ class ContentCardLinky extends LitElement {
 		<td style="width:95%">
 			<ul class="flow-row oneHourLabel">
 			${html`
-			${this.getOneDayNextEcoWatt(ecoWattForecastJ2).map(
-			(forecast) => html`
-			<li title="${forecast[0]}">${(forecast[0]%2==1) ? forecast[0] : ''}</li>`
+			${[...Array(24).keys()].map((hour) => String(hour).padStart(2, "0")).map(
+			(hour) => html`
+			<li title="${hour}">${(hour%2==1) ? hour : ''}</li>`
 			)}
 			`}
 			</ul>
@@ -1027,7 +1028,12 @@ class ContentCardLinky extends LitElement {
       }
     
       .cons-val {
-        //font-weight: bold;
+        white-space: nowrap;
+      }
+
+      .cons-unit {
+        font-size: .7em;
+        margin-left: 1px;
       }
       
       .year {

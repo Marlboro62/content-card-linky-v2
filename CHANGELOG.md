@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0-beta.3
+
+### Bug Fixes
+
+- Historique : l'unité (`showInTableUnit`) reste sur la même ligne que la valeur, en plus petit. Les lignes du tableau ne se décalent plus quand les colonnes sont étroites.
+- EcoWatt : la ligne des heures (01 à 23) s'affiche même quand RTE n'a pas encore publié J+2.
+- EcoWatt : un jour pas encore publié par RTE s'affiche en cases grises au lieu d'une barre vide.
+
 ## 1.6.0-beta.2
 
 ### Bug Fixes
