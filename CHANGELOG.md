@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+Version stable : regroupe 0.3.0-beta et 0.3.0-beta.2. Notes complètes dans `.github/release-notes/v0.3.0.md` et sur la page de la release.
+
 ## 0.3.0-beta.2
 
 ### Bug Fixes

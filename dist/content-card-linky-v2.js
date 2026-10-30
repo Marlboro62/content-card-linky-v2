@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "0.3.0-beta.2";
+const CARD_VERSION = "0.3.0";
 // Icône Linky : chemin HACS, remplaçable (page de démonstration)
 const LINKY_ICON = window.CONTENT_CARD_LINKY_CLASSIC_ICON || "/local/community/content-card-linky-v2/icons/linky.svg";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
