@@ -5,7 +5,9 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "0.2.0";
+const CARD_VERSION = "0.3.0-beta";
+// Icône Linky : chemin HACS, remplaçable (page de démonstration)
+const LINKY_ICON = window.CONTENT_CARD_LINKY_CLASSIC_ICON || "/local/community/content-card-linky-v2/icons/linky.svg";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
 const CARD_TYPE = "content-card-linky-classic";
 
@@ -220,7 +222,7 @@ class ContentCardLinky extends LitElement {
                   ${this.config.showIcon
                     ? html`
                       <div class="icon-block">
-                      <span class="linky-icon bigger" style="background: none, url('/local/community/content-card-linky-v2/icons/linky.svg') no-repeat; background-size: contain;"></span>
+                      <span class="linky-icon bigger" style="background: none, url('${LINKY_ICON}') no-repeat; background-size: contain;"></span>
                       </div>`
                     : html `` 
                   }
@@ -288,7 +290,7 @@ class ContentCardLinky extends LitElement {
     if ( this.config.showIcon ){
   	  return html `
 		<div class="icon-block">
-			<span class="linky-icon bigger" style="background: none, url('/local/community/content-card-linky-v2/icons/linky.svg') no-repeat; background-size: contain;"></span>
+			<span class="linky-icon bigger" style="background: none, url('${LINKY_ICON}') no-repeat; background-size: contain;"></span>
 		</div>`
 	  }
     else{
@@ -385,7 +387,7 @@ class ContentCardLinky extends LitElement {
   renderDailyWeekTitre( maConfig, monTitre ){
     if (maConfig === true) {
        return html
-       `${monTitre}<br>
+       `<span class="cons-val">${monTitre}</span><br>
        `
       }
     else{
@@ -936,13 +938,37 @@ class ContentCardLinky extends LitElement {
     return Number.parseFloat(value).toFixed(decimals);
   }
   
+  // Répartition Tempo en % : attributs tempo_percentage_* (V1), sinon calculée sur
+  // l'historique publié (dailyweek_HC / HP et couleur de chaque jour, export V2)
+  tempoShares(attributes) {
+    const keys = ["blue_hc", "blue_hp", "white_hc", "white_hp", "red_hc", "red_hp"];
+    const published = keys.map((k) => Number.parseFloat(attributes[`tempo_percentage_${k}`]) || 0);
+    if (published.some((v) => v > 0)) return { shares: published, days: undefined };
+
+    const list = (v) => (v === undefined || v === null ? [] : v.toString().split(","));
+    const hc = list(attributes.dailyweek_HC);
+    const hp = list(attributes.dailyweek_HP);
+    const colors = list(attributes.dailyweek_Tempo);
+    const sums = { blue_hc: 0, blue_hp: 0, white_hc: 0, white_hp: 0, red_hc: 0, red_hp: 0 };
+    let days = 0;
+    colors.forEach((c, i) => {
+      const color = (c || "").toLowerCase();
+      const vhc = Number.parseFloat(hc[i]);
+      const vhp = Number.parseFloat(hp[i]);
+      if (!(color in { blue: 1, white: 1, red: 1 }) || !(vhc >= 0) || !(vhp >= 0)) return;
+      sums[`${color}_hc`] += vhc;
+      sums[`${color}_hp`] += vhp;
+      days += 1;
+    });
+    const total = Object.values(sums).reduce((a, b) => a + b, 0);
+    if (!(total > 0)) return { shares: keys.map(() => 0), days: 0 };
+    return { shares: keys.map((k) => Math.round((sums[k] / total) * 1000) / 10), days };
+  }
+
   renderTempoPieChart(attributes) {
-    const blueHC = attributes.tempo_percentage_blue_hc || 0;
-    const blueHP = attributes.tempo_percentage_blue_hp || 0;
-    const whiteHC = attributes.tempo_percentage_white_hc || 0;
-    const whiteHP = attributes.tempo_percentage_white_hp || 0;
-    const redHC = attributes.tempo_percentage_red_hc || 0;
-    const redHP = attributes.tempo_percentage_red_hp || 0;
+    const { shares, days } = this.tempoShares(attributes);
+    const [blueHC, blueHP, whiteHC, whiteHP, redHC, redHP] = shares;
+    const empty = shares.every((v) => !(v > 0));
 
     const slices = [
       { label: "Bleu HC", value: blueHC, color: "#009dfa" },
@@ -959,7 +985,8 @@ class ContentCardLinky extends LitElement {
       cumulative += slice.value;
       return `${slice.color} ${start}% ${cumulative}%`;
     });
-    const gradient = gradientParts.join(", ");
+    // Sans données, un dégradé à 0 % afficherait la dernière couleur sur tout le cercle
+    const gradient = empty ? "var(--disabled-text-color, grey) 0% 100%" : gradientParts.join(", ");
 
     return html`
       <div class="tempo-pie-chart-container">
@@ -969,9 +996,12 @@ class ContentCardLinky extends LitElement {
             <div class="tempo-pie-legend-item">
               <span class="tempo-pie-legend-color" style="background:${slice.color};"></span>
               <span class="tempo-pie-legend-label">${slice.label}</span>
-              <span class="tempo-pie-legend-value">${slice.value}%</span>
+              <span class="tempo-pie-legend-value">${empty ? "–" : `${slice.value}%`}</span>
             </div>
           `)}
+          ${days
+            ? html`<span class="tempo-pie-caption">sur ${days} jours</span>`
+            : empty ? html`<span class="tempo-pie-caption">Données indisponibles</span>` : html``}
         </div>
       </div>
     `;
@@ -1327,6 +1357,11 @@ class ContentCardLinky extends LitElement {
       }
       .tempo-pie-legend-value {
         font-weight: bold;
+      }
+      .tempo-pie-caption {
+        font-size: .85em;
+        font-style: italic;
+        color: var(--secondary-text-color);
       }
 	  .tempoday-red {
         color: #ff2700;
