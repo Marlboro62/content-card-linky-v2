@@ -22,6 +22,11 @@ if (!customElements.get("ha-entity-picker")) {
   (customElements.get("hui-entities-card")).getConfigElement();
 }
 
+// ha-selector est chargé avec l'éditeur de la carte Tuile (formulaire ha-form)
+if (!customElements.get("ha-selector")) {
+  customElements.get("hui-tile-card")?.getConfigElement();
+}
+
 const LitElement = customElements.get("hui-masonry-view") ? Object.getPrototypeOf(customElements.get("hui-masonry-view")) : Object.getPrototypeOf(customElements.get("hui-view"));
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
@@ -331,26 +336,28 @@ export class contentCardLinkyEditor extends LitElement {
     `
   }
   
+  // Liste déroulante via ha-selector (API stable de Home Assistant) : ha-select et
+  // ha-list-item ne déclenchent plus de changement dans les versions récentes
   renderSelectField(label, config_key, options, value, default_value) {
-	let selectOptions = [];
-	for (let i = 0; i < options.length; i++) {
-		let currentOption = options[i];
-		selectOptions.push(html`<ha-list-item .value="${currentOption.value}">${currentOption.label}</ha-list-item>`);
-	}
+    return html`
+      <ha-selector
+        .hass=${this.hass}
+        .label=${label}
+        .selector=${{ select: { mode: "dropdown", options } }}
+        .value=${value || default_value}
+        @value-changed=${(ev) => this._selectChanged(config_key, ev.detail.value)}
+      ></ha-selector>
+    `;
+  }
 
-	return html`
-		<ha-select
-			label="${label}"
-			.value=${value || default_value}
-			.configValue=${config_key}                
-			@change=${this._valueChanged}
-			@closed=${(ev) => ev.stopPropagation()}
-		>
-			${selectOptions}
-		</ha-select>
-	`
-	}  
-  
+  _selectChanged(configKey, value) {
+    if (!this._config || !this.hass || this._config[configKey] === value) {
+      return;
+    }
+    this._config = { ...this._config, [configKey]: value };
+    fireEvent(this, "config-changed", { config: this._config });
+  }
+
   _valueChanged(ev) {
     if (!this._config || !this.hass) {
       return;
@@ -397,7 +404,7 @@ export class contentCardLinkyEditor extends LitElement {
         font-weight: 500;
         color: var(--primary-color);
       }
-      ha-textfield, ha-select, ha-entity-picker {
+      ha-textfield, ha-selector, ha-entity-picker {
         display: block;
         margin-bottom: 8px;
       }

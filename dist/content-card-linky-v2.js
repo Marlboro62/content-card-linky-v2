@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "1.6.0-beta.5";
+const CARD_VERSION = "1.6.0-beta.6";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
 const CARD_TYPE = "content-card-linky-classic";
 
@@ -78,7 +78,8 @@ class ContentCardLinky extends LitElement {
   }
 
   static async getConfigElement() {
-    await import("./content-card-linky-v2-editor.js");
+    // Version dans l'adresse : le navigateur recharge l'éditeur à chaque mise à jour
+    await import(`./content-card-linky-v2-editor.js?v=${CARD_VERSION}`);
     return document.createElement(`${CARD_TYPE}-editor`);
   }
 

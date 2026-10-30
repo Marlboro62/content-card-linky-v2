@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0-beta.6
+
+### Bug Fixes
+
+- Éditeur visuel : les listes déroulantes (nombre de jours, format des jours, calcul des prix) changent de nouveau de valeur. Elles utilisent maintenant `ha-selector`.
+- Éditeur visuel rechargé après chaque mise à jour de la carte : le navigateur ne garde plus l'ancienne version en cache.
+
 ## 1.6.0-beta.5
 
 ### Features
