@@ -5,11 +5,13 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "1.6.0-beta";
+const CARD_VERSION = "1.6.0-beta.2";
+// Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
+const CARD_TYPE = "content-card-linky-classic";
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "content-card-linky-v2",
+  type: CARD_TYPE,
   name: "Carte Enedis Linky V2",
   description: "Carte Linky classique pour MyElectricalData (V1 et V2).",
   preview: true,
@@ -17,7 +19,7 @@ window.customCards.push({
 });
 
 console.info(
-  `%c CONTENT-CARD-LINKY-V2 %c ${CARD_VERSION} `,
+  `%c CONTENT-CARD-LINKY-CLASSIC %c ${CARD_VERSION} `,
   "color: white; background: #0b5394; font-weight: 700;",
   "color: #0b5394; background: white; font-weight: 700;"
 );
@@ -77,7 +79,7 @@ class ContentCardLinky extends LitElement {
 
   static async getConfigElement() {
     await import("./content-card-linky-v2-editor.js");
-    return document.createElement("content-card-linky-v2-editor");
+    return document.createElement(`${CARD_TYPE}-editor`);
   }
 
   render() {
@@ -1247,4 +1249,4 @@ class ContentCardLinky extends LitElement {
       `;
   }
 }
-customElements.define('content-card-linky-v2', ContentCardLinky);
+if (!customElements.get(CARD_TYPE)) customElements.define(CARD_TYPE, ContentCardLinky);

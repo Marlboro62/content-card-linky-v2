@@ -14,7 +14,7 @@ La carte Linky **classique** ([content-card-linky](https://github.com/MyElectric
 - **Tempo** : les jours restants s'affichent au format `288 / 300`, avec la V1 comme avec la V2.
 - **Période annuelle personnalisée** : l'évolution annuelle suit `annual_period_start` quand l'export le fournit.
 - **Camembert Tempo** (option `showTempoPieChart`) : répartition de la consommation en 6 parts, bleu, blanc et rouge en HC et en HP.
-- Nouveau type de carte, `custom:content-card-linky-v2` : elle peut être installée à côté de la carte d'origine.
+- Nouveau type de carte, `custom:content-card-linky-classic` : elle peut être installée à côté de la carte d'origine.
 
 ## Installation
 
@@ -40,7 +40,7 @@ type: module
 La carte se configure dans l'éditeur visuel. En YAML, avec les entités de l'export Home Assistant de MyElectricalData V2 (`<pdl>` est votre numéro de point de livraison) :
 
 ```yaml
-type: custom:content-card-linky-v2
+type: custom:content-card-linky-classic
 entity: sensor.myelectricaldata_linky_<pdl>_consumption
 titleName: LINKY
 nbJoursAffichage: "7"
@@ -55,11 +55,13 @@ tempoEntityJ0: sensor.myelectricaldata_tempo_today
 tempoEntityJ1: sensor.myelectricaldata_tempo_tomorrow
 ```
 
+Le type est `content-card-linky-classic` et non `content-card-linky-v2` : ce nom est déjà réservé par la [carte Linky New](https://github.com/Marlboro62/content-card-linky-new).
+
 Si vous avez changé le préfixe des entités dans l'export (`entity_prefix`), adaptez les noms en conséquence.
 
 ### Venir de la carte d'origine
 
-Dans le YAML de la carte, remplacez `type: custom:content-card-linky` par `type: custom:content-card-linky-v2`. Les options sont les mêmes.
+Dans le YAML de la carte, remplacez `type: custom:content-card-linky` par `type: custom:content-card-linky-classic`. Les options sont les mêmes.
 
 ### Options
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0-beta.2
+
+### Bug Fixes
+
+- Type de carte renommé `custom:content-card-linky-classic` : `custom:content-card-linky-v2` est déjà réservé par la carte Linky New, qui s'affichait à la place quand elle est installée.
+
 ## 1.6.0-beta
 
 Première version de la Carte Enedis Linky V2, reprise de content-card-linky 1.5.6.
