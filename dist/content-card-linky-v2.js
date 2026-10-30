@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "1.6.0-beta.4";
+const CARD_VERSION = "1.6.0-beta.5";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
 const CARD_TYPE = "content-card-linky-classic";
 
@@ -839,6 +839,7 @@ class ContentCardLinky extends LitElement {
     if (typeof value === "string" && this.hass?.states?.[value]) {
       value = this.hass.states[value].state;
     }
+    if (typeof value === "string") value = value.replace(",", ".");
     const price = Number.parseFloat(value);
     return Number.isFinite(price) && price > 0 ? price : undefined;
   }

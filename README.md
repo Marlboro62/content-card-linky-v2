@@ -96,7 +96,7 @@ Dans le YAML de la carte, remplacez `type: custom:content-card-linky` par `type:
 
 ### Prix : Base, HC/HP et Tempo
 
-Quand l'export ne fournit pas les coûts (`-1`, par exemple avec une offre Tempo), la carte les calcule elle-même : coût du jour en en-tête, lignes Prix, Prix HC et Prix HP de l'historique.
+Quand l'export ne fournit pas les coûts (`-1`, par exemple avec une offre Tempo), la carte les calcule elle-même : coût du jour en en-tête, lignes Prix, Prix HC et Prix HP de l'historique. Ces réglages sont aussi dans la section **Prix** de l'éditeur visuel.
 
 | Option | Rôle |
 | --- | --- |

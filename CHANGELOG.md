@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.6.0-beta.5
+
+### Features
+
+- Éditeur visuel en français, organisé en sections : Général, EcoWatt, Tempo, Prix, Affichage, Évolutions, Historique, EcoWatt et Tempo.
+- Réglages de prix dans l'éditeur visuel : calcul des prix (`priceMode`), prix Base, heures creuses et heures pleines (nombre ou entité).
+- Interrupteur du camembert Tempo dans l'éditeur visuel.
+
+### Bug Fixes
+
+- Éditeur visuel : le capteur « Tempo informations » choisi s'affiche de nouveau.
+- Prix saisis avec une virgule (`0,2016`) acceptés.
+
 ## 1.6.0-beta.4
 
 ### Features
