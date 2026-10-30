@@ -1,119 +1,106 @@
-# content-card-linky
-[![HACS Supported](https://img.shields.io/badge/HACS-Supported-green.svg)](https://github.com/custom-components/hacs)
+# Carte Enedis Linky V2
 
-**Cette carte est compatible qu'avec l'integration : [MyElectricalData](https://github.com/MyElectricalData/myelectricaldata_import)**
+[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/docs/faq/custom_repositories)
+[![Release](https://img.shields.io/github/v/release/Marlboro62/content-card-linky-v2?include_prereleases)](https://github.com/Marlboro62/content-card-linky-v2/releases)
 
-**Un question ? Un problème ? Une demande ? Venez en parler sur le [forum HACF](https://forum.hacf.fr/).**
+La carte Linky **classique** ([content-card-linky](https://github.com/MyElectricalData/content-card-linky)), compatible avec **MyElectricalData V2** (add-on « MyElectricalData new », mode client local) comme avec la V1.
 
-## Bienvenue !
+<img src="https://raw.githubusercontent.com/Marlboro62/content-card-linky-v2/main/content-card-linky.png" alt="Carte Enedis Linky V2" width="400">
 
-Avant de pouvoir utiliser cette intégration, assurez vous : 
-* D'avoir validé l'installation correcte de [MyElectricalData](https://github.com/MyElectricalData/myelectricaldata_import)
+## Ce qui change par rapport à la carte d'origine (1.5.6)
 
-## Installer la carte
-<details>
-  <summary><b>Via HACS (mise à jour en un clic) : </b></summary><br>
- 
-* Ouvrez HACS, cliquez sur `Frontend`, puis selectionnez le menu 3 points en haut à droite.
- 
- *si vous n'avez pas HACS, pour l'installer cela se passe ici : [HACS : Ajoutez des modules et des cartes personnalisées](https://forum.hacf.fr/t/hacs-ajoutez-des-modules-et-des-cartes-personnalisees/359)
- 
-* Ajoutez le dépot personnalisé : `https://github.com/MyElectricalData/content-card-linky`
+- **EcoWatt** : les 24 cases et la ligne des heures s'affichent avec l'export V2. Les heures au format `0h 00min` (V2) et `00 h` (V1) sont lues toutes les deux ([MyElectricalData/myelectricaldata_new#190](https://github.com/MyElectricalData/myelectricaldata_new/issues/190)).
+- **EcoWatt** : le niveau `0` (production décarbonée chez RTE) s'affiche en vert.
+- **Tempo** : les jours restants s'affichent au format `288 / 300`, avec la V1 comme avec la V2.
+- **Période annuelle personnalisée** : l'évolution annuelle suit `annual_period_start` quand l'export le fournit.
+- **Camembert Tempo** (option `showTempoPieChart`) : répartition de la consommation en 6 parts, bleu, blanc et rouge en HC et en HP.
+- Nouveau type de carte, `custom:content-card-linky-v2` : elle peut être installée à côté de la carte d'origine.
 
-* Choisir la catégorie `Lovelace`
+## Installation
 
-* Cliquez sur le bouton `Installer` de la carte
- 
-* Cliquez sur le bouton `Installer` de la popup
- 
-* La carte est maintenant rouge, signifiant qu'un redémarrage du serveur Home Assistant est nécessaire
+### Via HACS
 
-* Accédez à la vue `Contrôle du serveur` (`Configuration` -> `Contrôle du serveur`), puis cliquez sur le bouton `Redémarrer` dans la zone `Gestion du serveur`
-</details>
+1. HACS → menu ⋮ → **Dépôts personnalisés**.
+2. Dépôt : `https://github.com/Marlboro62/content-card-linky-v2`, type **Tableau de bord** (Lovelace).
+3. Installez **Carte Enedis Linky V2**, puis faites Ctrl+F5 dans le navigateur.
 
-<details>
-  <summary><b>Manuellement (à faire à chaque mise à jour)</b></summary>
-* Telecharger le fichier [content-card-linky.js](https://github.com/MyElectricalData/content-card-linky/blob/main/content-card-linky.js) et le dossier [images](https://github.com/MyElectricalData/content-card-linky/tree/main/images) 
-  
-* Les mettre dans votre repertoire `www` et l'ajouter dans l'interface ressource
-  
-* Configurez la ressource dans votre fichier de configuration.
-  
+Pour une version bêta, activez d'abord « Afficher les versions bêta » dans la fiche de la carte dans HACS.
+
+### Manuellement
+
+Copiez le contenu du dossier `dist` dans `www/community/content-card-linky-v2/`, puis ajoutez la ressource :
+
+```yaml
+url: /local/community/content-card-linky-v2/content-card-linky-v2.js
+type: module
 ```
-resources:
-  - url: /hacsfiles/content-card-linky/content-card-linky.js
-    type: module
+
+## Configuration
+
+La carte se configure dans l'éditeur visuel. En YAML, avec les entités de l'export Home Assistant de MyElectricalData V2 (`<pdl>` est votre numéro de point de livraison) :
+
+```yaml
+type: custom:content-card-linky-v2
+entity: sensor.myelectricaldata_linky_<pdl>_consumption
+titleName: LINKY
+nbJoursAffichage: "7"
+showEcoWatt: true
+showEcoWattJ12: true
+ewEntity: sensor.myelectricaldata_ecowatt_j0
+ewEntityJ1: sensor.myelectricaldata_ecowatt_j1
+ewEntityJ2: sensor.myelectricaldata_ecowatt_j2
+showTempo: true
+tempoEntityInfo: sensor.myelectricaldata_tempo_info
+tempoEntityJ0: sensor.myelectricaldata_tempo_today
+tempoEntityJ1: sensor.myelectricaldata_tempo_tomorrow
 ```
-</details>
 
-## Ajouter la carte
-<details>
-  <summary><b>Via l'interface graphique</b></summary>
-  * Ajoutez une carte via l'interface graphique, et configurez les options comme vous le désirez.  
+Si vous avez changé le préfixe des entités dans l'export (`entity_prefix`), adaptez les noms en conséquence.
 
-</details>
-<details>
-  <summary><b>En YAML</b></summary>
-  * Dans votre éditeur lovelace, ajouter ceci :
+### Venir de la carte d'origine
 
-````
-type: 'custom:content-card-linky'
-entity: sensor.linky_<pdl>_consumption
-````
-</details>
+Dans le YAML de la carte, remplacez `type: custom:content-card-linky` par `type: custom:content-card-linky-v2`. Les options sont les mêmes.
 
-### Redémarrer votre serveur Home Assistant
+### Options
 
-## Options disponibles
+| Option | Défaut | Rôle |
+| --- | --- | --- |
+| `entity` | | Capteur de consommation MyElectricalData (obligatoire) |
+| `titleName` | `LINKY` | Titre |
+| `nbJoursAffichage` | `7` | Nombre de jours d'historique |
+| `showHistory` | `true` | Historique sur plusieurs jours |
+| `showHeader` | `true` | En-tête (consommation de la veille) |
+| `showPeakOffPeak` | `true` | Répartition heures pleines / heures creuses |
+| `showPrice` | `true` | Prix de l'historique |
+| `showDayPrice` | `false` | Prix par jour |
+| `showDayPriceHCHP` | `false` | Prix HC / HP par jour |
+| `showDayHCHP` | `false` | Consommation HC / HP par jour |
+| `showDayMaxPower` | `false` | Puissance maximale, avec dépassement signalé |
+| `showDayName` | `long` | Jours de la semaine : `short`, `narrow` ou `long` |
+| `showCurrentMonthRatio` | `true` | Évolution du mois en cours |
+| `showMonthRatio` | `true` | Évolution du mois précédent |
+| `showWeekRatio` | `false` | Évolution de la semaine |
+| `showYesterdayRatio` | `false` | Évolution de la veille |
+| `showYearRatio` | | Évolution annuelle |
+| `showTitle` | `false` | Affiche le titre |
+| `showIcon` | `false` | Icône Linky |
+| `showInTableUnit` | `false` | Unités dans le tableau |
+| `showTitleLign` | `false` | Titre de chaque ligne |
+| `showError` | `true` | Messages d'erreur |
+| `showEcoWatt` | `false` | EcoWatt du jour (`ewEntity`) |
+| `showEcoWattJ12` | `false` | EcoWatt du lendemain et du surlendemain (`ewEntityJ1`, `ewEntityJ2`) |
+| `showTempo` | `false` | Tempo : couleurs du jour et du lendemain, jours restants |
+| `showTempoPieChart` | `false` | Camembert de la consommation Tempo en 6 parts |
 
-![image](https://github.com/user-attachments/assets/c00aafd2-c631-4021-82a0-583c8f31caf6)
+## Limites connues avec la V2
 
+- Le **camembert Tempo** lit les attributs `tempo_percentage_*`, que l'export V2 ne publie pas encore : avec la V2, ses parts restent à 0 %.
+- La **période annuelle personnalisée** dépend de l'attribut `annual_period_start`, absent de l'export V2 : l'évolution annuelle suit alors l'année civile.
 
+## Support
 
-  ````
-type: custom:content-card-linky                 Type de la carte
-nbJoursAffichage: '7'                           Nombre de jours historique affiché
-titleName: LINKY                                Titre
-entity: sensor.linky_123456789_consumption      Sensor de l'integration MyElectricalData
-ewEntity: sensor.rte_ecowatt_j0                 Sensor de l'intégration Ecowatt J+0 via (!) MyElectricalData (sensor dispo dès MyElectricaldata v0.9.1)
-ewEntityJ1: sensor.rte_ecowatt_j1               Sensor de l'intégration Ecowatt J+1 via (!) MyElectricalData (sensor dispo dès MyElectricaldata v0.9.1)
-ewEntityJ2: sensor.rte_ecowatt_j2               Sensor de l'intégration Ecowatt J+2 via (!) MyElectricalData (sensor dispo dès MyElectricaldata v0.9.1)
-tempoInfo: sensor.edf_tempo_info                Sensor de l'intégration Tempo, contient des prix et jours restant par couleur (dispo dès MyElectricalData v0.9.2 ou dev 0.9.2.b4)
-tempoEntityJ0: sensor.rte_tempo_today           Sensor de l'intégration Tempo aujourd'hui
-tempoEntityJ1: sensor.rte_tempo_tomorrow        Sensor de l'intégration Tempo demain
-showIcon: false                                 Affiche l'icon Linky
-showHistory: true                               Affiche l'historique sur plusieurs jours
-showInTableUnit: false                          
-showDayPriceHCHP: false
-showDayHCHP: false                              
-showMonthRatio: false                           
-showTitle: true                                 
-showPeakOffPeak: false
-showDayPrice: true                              
-showPrice: true                                 Affiche le prix de l'historique
-showCurrentMonthRatio: true                     
-showWeekRatio: true                             
-showDayName: long                               Affichage des jours de la semaine : "short", "narrow", "long"
-showDayMaxPower: true                           Affichage MaxPower avec indication si dépassé
-showTitleLine: true                             Affichage des titres par ligne
-showEcoWatt: true                               Affichage EcoWatt pour ajourd'hui
-showEcoWattJ12: true                            Affichage EcoWatt pour demains et après (sensor dispo dès MyElectricaldata v0.9.1)
-showTempo: false                                Affichage Tempo
-showTempoColor: true                            Affichage couleurs Tempo historique pas colorer les titres des jours (apd MED 0.9.3)     
-````
+Bugs et demandes : [issues GitHub](https://github.com/Marlboro62/content-card-linky-v2/issues). Masquez votre numéro de PDL dans les captures.
 
-![image](https://github.com/MyElectricalData/content-card-linky/assets/44190435/04dac630-1d05-43f0-bb9e-cfed3ae5a943)![image](https://github.com/MyElectricalData/content-card-linky/assets/44190435/a99ee251-c464-4199-bb33-35499e412771)
+## Merci
 
-
-
-## Merci ##
-
-Cette carte est basé sur [@saniho](https://github.com/saniho/content-card-linky)
-
-**************
-
-N'hésitez pas à aller faire un tour sur ce forum ou vous trouverez pleins d'informations
-
-https://forum.hacf.fr/t/hacs-ajoutez-des-modules-et-des-cartes-personnalisees/359 
-
-*************
+Cette carte reprend [content-card-linky](https://github.com/MyElectricalData/content-card-linky) de MyElectricalData, elle-même basée sur le travail de [@saniho](https://github.com/saniho/content-card-linky). Licence MIT.

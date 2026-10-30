@@ -5,14 +5,22 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
+const CARD_VERSION = "1.6.0-beta";
+
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "content-card-linky",
-  name: "Carte Enedis",
-  description: "Carte pour l'intégration MyElectricalData.",
+  type: "content-card-linky-v2",
+  name: "Carte Enedis Linky V2",
+  description: "Carte Linky classique pour MyElectricalData (V1 et V2).",
   preview: true,
-  documentationURL: "https://github.com/MyElectricalData/content-card-linky",
+  documentationURL: "https://github.com/Marlboro62/content-card-linky-v2",
 });
+
+console.info(
+  `%c CONTENT-CARD-LINKY-V2 %c ${CARD_VERSION} `,
+  "color: white; background: #0b5394; font-weight: 700;",
+  "color: #0b5394; background: white; font-weight: 700;"
+);
 const fireEvent = (node, type, detail, options) => {
   options = options || {};
   detail = detail === null || detail === undefined ? {} : detail;
@@ -68,8 +76,8 @@ class ContentCardLinky extends LitElement {
   }
 
   static async getConfigElement() {
-    await import("./content-card-linky-editor.js");
-    return document.createElement("content-card-linky-editor");
+    await import("./content-card-linky-v2-editor.js");
+    return document.createElement("content-card-linky-v2-editor");
   }
 
   render() {
@@ -209,7 +217,7 @@ class ContentCardLinky extends LitElement {
                   ${this.config.showIcon
                     ? html`
                       <div class="icon-block">
-                      <span class="linky-icon bigger" style="background: none, url('/local/community/content-card-linky/icons/linky.svg') no-repeat; background-size: contain;"></span>
+                      <span class="linky-icon bigger" style="background: none, url('/local/community/content-card-linky-v2/icons/linky.svg') no-repeat; background-size: contain;"></span>
                       </div>`
                     : html `` 
                   }
@@ -277,7 +285,7 @@ class ContentCardLinky extends LitElement {
     if ( this.config.showIcon ){
   	  return html `
 		<div class="icon-block">
-			<span class="linky-icon bigger" style="background: none, url('/local/community/content-card-linky/icons/linky.svg') no-repeat; background-size: contain;"></span>
+			<span class="linky-icon bigger" style="background: none, url('/local/community/content-card-linky-v2/icons/linky.svg') no-repeat; background-size: contain;"></span>
 		</div>`
 	  }
     else{
@@ -1239,4 +1247,4 @@ class ContentCardLinky extends LitElement {
       `;
   }
 }
-customElements.define('content-card-linky', ContentCardLinky);
+customElements.define('content-card-linky-v2', ContentCardLinky);

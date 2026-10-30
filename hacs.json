@@ -1,6 +1,6 @@
 {
-    "name": "Linky Content Card",
-    "country": "FR",
-    "render_readme": true,
-    "filename": "content-card-linky.js"
+  "name": "Carte Enedis Linky V2",
+  "filename": "content-card-linky-v2.js",
+  "render_readme": true,
+  "homeassistant": "2024.1.0"
 }
