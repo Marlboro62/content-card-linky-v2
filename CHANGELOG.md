@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0-beta
+
+### Features
+
+- Page de démonstration (`docs/demo.html`) : la vraie carte avec des données simulées, exports V1 et V2, modes de calcul des prix, Tempo et EcoWatt, thème clair ou sombre.
+- Camembert Tempo avec l'export V2 : répartition calculée sur l'historique publié (31 jours) quand les attributs `tempo_percentage_*` sont absents.
+- Captures réelles dans le README.
+
+### Bug Fixes
+
+- Camembert Tempo sans données : cercle gris et « Données indisponibles » au lieu d'un cercle entièrement rouge à 0 %.
+- Titres des lignes de l'historique (Prix HC, Prix HP…) jamais coupés : les lignes ne se décalent plus quand le camembert réduit la largeur.
+
 ## 0.2.0
 
 Première version stable : regroupe les versions 1.6.0-beta à 1.6.0-beta.6. Notes complètes dans `.github/release-notes/v0.2.0.md` et sur la page de la release.

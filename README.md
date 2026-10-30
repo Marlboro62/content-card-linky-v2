@@ -5,7 +5,21 @@
 
 La carte Linky **classique** ([content-card-linky](https://github.com/MyElectricalData/content-card-linky)), compatible avec **MyElectricalData V2** (add-on « MyElectricalData new », mode client local) comme avec la V1.
 
-<img src="https://raw.githubusercontent.com/Marlboro62/content-card-linky-v2/main/content-card-linky.png" alt="Carte Enedis Linky V2" width="400">
+🎮 **[Essayer la démo en ligne](https://marlboro62.github.io/content-card-linky-v2/docs/demo.html)** : la vraie carte avec des données simulées, sans installer Home Assistant. Elle permet de comparer les exports V1 et V2, les modes de calcul des prix, et les situations Tempo et EcoWatt.
+
+## Captures
+
+Dans Home Assistant, avec l'export MyElectricalData V2 et une offre Tempo :
+
+<img src="https://raw.githubusercontent.com/Marlboro62/content-card-linky-v2/main/images/carte-tempo.png" alt="Carte Enedis Linky V2 dans Home Assistant : consommation, prix Tempo calculés, EcoWatt et jours Tempo restants" width="400">
+
+L'éditeur visuel en français, avec le calcul des prix :
+
+<img src="https://raw.githubusercontent.com/Marlboro62/content-card-linky-v2/main/images/editeur-prix.png" alt="Éditeur visuel de la carte, section Prix" width="700">
+
+Thème clair avec le camembert Tempo (démo) :
+
+<img src="https://raw.githubusercontent.com/Marlboro62/content-card-linky-v2/main/images/demo-clair-camembert.png" alt="Carte en thème clair avec le camembert Tempo" width="400">
 
 ## Ce qui change par rapport à la carte d'origine (1.5.6)
 
@@ -15,7 +29,7 @@ Le détail complet est dans les [notes de la version 0.2.0](https://github.com/M
 - **EcoWatt** : le niveau `0` (production décarbonée chez RTE) s'affiche en vert.
 - **Tempo** : les jours restants s'affichent au format `288 / 300`, avec la V1 comme avec la V2.
 - **Période annuelle personnalisée** : l'évolution annuelle suit `annual_period_start` quand l'export le fournit.
-- **Camembert Tempo** (option `showTempoPieChart`) : répartition de la consommation en 6 parts, bleu, blanc et rouge en HC et en HP.
+- **Camembert Tempo** (option `showTempoPieChart`) : répartition de la consommation en 6 parts, bleu, blanc et rouge en HC et en HP. Avec la V2, il est calculé sur l'historique publié (31 jours).
 - Nouveau type de carte, `custom:content-card-linky-classic` : elle peut être installée à côté de la carte d'origine.
 
 ## Installation
@@ -122,7 +136,7 @@ kWhPriceHP: 0.2146
 
 ## Limites connues avec la V2
 
-- Le **camembert Tempo** lit les attributs `tempo_percentage_*`, que l'export V2 ne publie pas encore : avec la V2, ses parts restent à 0 %.
+- Le **camembert Tempo** lit les attributs `tempo_percentage_*` de la V1. L'export V2 ne les publie pas : la carte calcule alors la répartition sur l'historique publié (31 jours), et non sur l'année.
 - La **période annuelle personnalisée** dépend de l'attribut `annual_period_start`, absent de l'export V2 : l'évolution annuelle suit alors l'année civile.
 
 ## Support
