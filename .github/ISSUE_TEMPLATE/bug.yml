@@ -21,7 +21,7 @@ body:
     attributes:
       label: Version
       description: Visible dans HACS, dans la console du navigateur (F12) ou dans l'onglet Informations de l'add-on.
-      placeholder: "ex. : 1.6.0"
+      placeholder: "ex. : 0.2.0"
     validations:
       required: true
   - type: input

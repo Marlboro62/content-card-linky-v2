@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "1.6.0-beta.6";
+const CARD_VERSION = "0.2.0";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
 const CARD_TYPE = "content-card-linky-classic";
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+Première version stable : regroupe les versions 1.6.0-beta à 1.6.0-beta.6. Notes complètes dans `.github/release-notes/v0.2.0.md` et sur la page de la release.
+
 ## 1.6.0-beta.6
 
 ### Bug Fixes

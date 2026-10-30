@@ -9,6 +9,8 @@ La carte Linky **classique** ([content-card-linky](https://github.com/MyElectric
 
 ## Ce qui change par rapport à la carte d'origine (1.5.6)
 
+Le détail complet est dans les [notes de la version 0.2.0](https://github.com/Marlboro62/content-card-linky-v2/releases/tag/v0.2.0).
+
 - **EcoWatt** : les 24 cases et la ligne des heures s'affichent avec l'export V2. Les heures au format `0h 00min` (V2) et `00 h` (V1) sont lues toutes les deux ([MyElectricalData/myelectricaldata_new#190](https://github.com/MyElectricalData/myelectricaldata_new/issues/190)).
 - **EcoWatt** : le niveau `0` (production décarbonée chez RTE) s'affiche en vert.
 - **Tempo** : les jours restants s'affichent au format `288 / 300`, avec la V1 comme avec la V2.
