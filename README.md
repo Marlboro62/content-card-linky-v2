@@ -94,6 +94,30 @@ Dans le YAML de la carte, remplacez `type: custom:content-card-linky` par `type:
 | `showTempo` | `false` | Tempo : couleurs du jour et du lendemain, jours restants |
 | `showTempoPieChart` | `false` | Camembert de la consommation Tempo en 6 parts |
 
+### Prix : Base, HC/HP et Tempo
+
+Quand l'export ne fournit pas les coûts (`-1`, par exemple avec une offre Tempo), la carte les calcule elle-même : coût du jour en en-tête, lignes Prix, Prix HC et Prix HP de l'historique.
+
+| Option | Rôle |
+| --- | --- |
+| `priceMode` | `auto` (défaut), `base`, `hchp`, `tempo` ou `export` |
+| `kWhPrice` | Prix du kWh en Base : nombre (`0.2016`) ou entité (`input_number.prix_base`) |
+| `kWhPriceHC` / `kWhPriceHP` | Prix du kWh en heures creuses et en heures pleines : nombres ou entités |
+| `tempoPrices` | Prix Tempo, à renseigner seulement pour remplacer les capteurs `sensor.myelectricaldata_tempo_price_*` : `blue_hc`, `blue_hp`, `white_hc`, `white_hp`, `red_hc`, `red_hp` (nombres ou entités) |
+
+- **`auto`** : la carte complète seulement les coûts absents de l'export. Elle utilise `kWhPriceHC` et `kWhPriceHP` s'ils sont renseignés, sinon `kWhPrice`, sinon les prix Tempo publiés par l'export selon la couleur de chaque jour.
+- **`base`**, **`hchp`** ou **`tempo`** : la carte calcule tous les coûts avec cette formule, et remplace ceux de l'export.
+- **`export`** : la carte affiche les coûts de l'export tels quels, comme la carte d'origine.
+
+En Tempo, le coût d'un jour vaut HC × prix HC de sa couleur + HP × prix HP de sa couleur. Il faut pour cela que l'export publie la répartition HC/HP du jour (`dailyweek_HC` et `dailyweek_HP`).
+
+```yaml
+# Exemple : prix HC/HP saisis à la main
+priceMode: hchp
+kWhPriceHC: 0.1696
+kWhPriceHP: 0.2146
+```
+
 ## Limites connues avec la V2
 
 - Le **camembert Tempo** lit les attributs `tempo_percentage_*`, que l'export V2 ne publie pas encore : avec la V2, ses parts restent à 0 %.

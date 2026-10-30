@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.0-beta.4
+
+### Features
+
+- Prix calculés par la carte quand l'export ne les fournit pas : formules Base (`kWhPrice`), HC/HP (`kWhPriceHC`, `kWhPriceHP`) et Tempo (prix de la couleur du jour, lus dans `sensor.myelectricaldata_tempo_price_*`). Prix en nombre ou en entité. Option `priceMode` : `auto`, `base`, `hchp`, `tempo` ou `export`.
+
+### Bug Fixes
+
+- `kWhPrice` : le prix par jour de l'historique n'est plus `NaN`.
+- Offre Tempo avec l'export V2 : coût du jour en en-tête et lignes Prix, Prix HC et Prix HP renseignés au lieu de 0.00 € et ⚠.
+
 ## 1.6.0-beta.3
 
 ### Bug Fixes

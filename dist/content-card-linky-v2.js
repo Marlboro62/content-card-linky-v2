@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "1.6.0-beta.3";
+const CARD_VERSION = "1.6.0-beta.4";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
 const CARD_TYPE = "content-card-linky-classic";
 
@@ -104,7 +104,7 @@ class ContentCardLinky extends LitElement {
       `
     }
 
-    const attributes = stateObj.attributes;
+    const attributes = this.withComputedCosts(stateObj.attributes);
     const modeCompteur = attributes["typeCompteur"];
     
     if (stateObj) {
@@ -496,12 +496,6 @@ class ContentCardLinky extends LitElement {
     }
   }
   renderDayPrice(value, dayNumber, config) {
-    if (config.kWhPrice) {
-      return html
-      `
-        <br><span class="cons-val">${this.toFloat(value * config.kWhPrice, 2)} €</span>
-      `;
-    }
     if (config.showDayPrice) {
        const valeur = value.toString().split(",")[dayNumber-1] ;
        if ( valeur === "-1" ){
@@ -789,8 +783,9 @@ class ContentCardLinky extends LitElement {
       throw new Error('You need to define an entity');
     }
 
-    if (config.kWhPrice && isNaN(config.kWhPrice)) {
-      throw new Error('kWhPrice should be a number')
+    const modes = ["auto", "export", "base", "hchp", "tempo"];
+    if (config.priceMode && !modes.includes(config.priceMode)) {
+      throw new Error(`priceMode doit valoir ${modes.join(", ")}`);
     }
     
     const defaultConfig = {
@@ -838,6 +833,103 @@ class ContentCardLinky extends LitElement {
     return 3;
   }
  
+  // Prix en €/kWh : nombre, ou entité (sensor, input_number) dont l'état est le prix
+  resolvePrice(value) {
+    if (value === undefined || value === null || value === "") return undefined;
+    if (typeof value === "string" && this.hass?.states?.[value]) {
+      value = this.hass.states[value].state;
+    }
+    const price = Number.parseFloat(value);
+    return Number.isFinite(price) && price > 0 ? price : undefined;
+  }
+
+  tempoPrice(color, period) {
+    const configured = this.config.tempoPrices?.[`${color}_${period}`];
+    if (configured !== undefined) return this.resolvePrice(configured);
+    // sensor.<prefixe>_tempo_info -> sensor.<prefixe>_tempo_price_<couleur>_<hc|hp>
+    const info = this.config.tempoEntityInfo || "sensor.myelectricaldata_tempo_info";
+    return this.resolvePrice(info.replace(/_tempo_info$/, "_tempo_price_") + `${color}_${period}`);
+  }
+
+  // Coûts journaliers calculés par la carte (formule Base, HC/HP ou Tempo) quand l'export
+  // ne les fournit pas (-1), par exemple pour une offre Tempo. En mode auto, une valeur
+  // publiée par l'export est toujours conservée ; un mode explicite la remplace.
+  withComputedCosts(attributes) {
+    const config = this.config;
+    let mode = config.priceMode || "auto";
+    if (mode === "export" || !attributes?.dailyweek) return attributes;
+    const explicit = mode !== "auto";
+    if (mode === "auto") {
+      if (this.resolvePrice(config.kWhPriceHC) && this.resolvePrice(config.kWhPriceHP)) mode = "hchp";
+      else if (this.resolvePrice(config.kWhPrice)) mode = "base";
+      else mode = "tempo";
+    }
+
+    const list = (value) => (value === undefined || value === null ? [] : value.toString().split(","));
+    const num = (value) => {
+      const n = Number.parseFloat(value);
+      return value === undefined || value === "-1" || !Number.isFinite(n) ? undefined : n;
+    };
+    const days = list(attributes.dailyweek);
+    const hcList = list(attributes.dailyweek_HC);
+    const hpList = list(attributes.dailyweek_HP);
+    const tempoList = list(attributes.dailyweek_Tempo);
+    const total = (attributes.daily || []).map((v) => (v === -1 ? undefined : num(v)));
+    const cost = list(attributes.dailyweek_cost);
+    const costHC = list(attributes.dailyweek_costHC);
+    const costHP = list(attributes.dailyweek_costHP);
+
+    const prices = (index) => {
+      if (mode === "base") {
+        const p = this.resolvePrice(config.kWhPrice);
+        return p ? { base: p, hc: p, hp: p } : undefined;
+      }
+      if (mode === "hchp") {
+        const hc = this.resolvePrice(config.kWhPriceHC);
+        const hp = this.resolvePrice(config.kWhPriceHP);
+        return hc && hp ? { hc, hp } : undefined;
+      }
+      const color = (tempoList[index] || "").toLowerCase();
+      if (!["blue", "white", "red"].includes(color)) return undefined;
+      const hc = this.tempoPrice(color, "hc");
+      const hp = this.tempoPrice(color, "hp");
+      return hc && hp ? { hc, hp } : undefined;
+    };
+
+    let changed = false;
+    const keep = (current) => !explicit && current !== undefined && current !== "-1";
+    const fmt = (value) => value.toFixed(2);
+    days.forEach((_, i) => {
+      const p = prices(i);
+      if (!p) return;
+      const hc = num(hcList[i]);
+      const hp = num(hpList[i]);
+      let dayCost;
+      if (hc !== undefined && hp !== undefined) {
+        if (!keep(costHC[i])) { costHC[i] = fmt(hc * p.hc); changed = true; }
+        if (!keep(costHP[i])) { costHP[i] = fmt(hp * p.hp); changed = true; }
+        dayCost = hc * p.hc + hp * p.hp;
+      } else if (p.base && total[i] !== undefined) {
+        dayCost = total[i] * p.base;
+      }
+      if (dayCost !== undefined && !keep(cost[i])) { cost[i] = fmt(dayCost); changed = true; }
+    });
+    if (!changed) return attributes;
+
+    const result = {
+      ...attributes,
+      dailyweek_cost: cost.join(","),
+      dailyweek_costHC: costHC.join(","),
+      dailyweek_costHP: costHP.join(","),
+    };
+    // Coût de la veille (en-tête) : premier jour de la liste, la plus récente
+    const exportCost = Number.parseFloat(attributes.daily_cost);
+    if ((explicit || !(exportCost > 0)) && num(cost[0]) !== undefined) {
+      result.daily_cost = num(cost[0]);
+    }
+    return result;
+  }
+
   toFloat(value, decimals = 1) {
     return Number.parseFloat(value).toFixed(decimals);
   }
