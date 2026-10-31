@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "0.3.1-beta.1";
+const CARD_VERSION = "0.3.1-beta.2";
 // Icône Linky : chemin HACS, remplaçable (page de démonstration)
 const LINKY_ICON = window.CONTENT_CARD_LINKY_CLASSIC_ICON || "/local/community/content-card-linky-v2/icons/linky.svg";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
@@ -1283,7 +1283,7 @@ class ContentCardLinky extends LitElement {
 	text-align: center;
         background: #009dfa;
     	border: 2px solid var(--divider-color);
-    	box-shadow: var(--ha-card-box-shadow,none);
+    	box-shadow: none; /* l'ombre des cartes du thème (reflet, halo) donnait un effet bouton */
 	text-transform: capitalize;
       }
 	  .tempoday-blue {
@@ -1300,7 +1300,7 @@ class ContentCardLinky extends LitElement {
 	text-align: center;
         background: white;
     	border: 2px solid var(--divider-color);
-    	box-shadow: var(--ha-card-box-shadow,none);
+    	box-shadow: none; /* l'ombre des cartes du thème (reflet, halo) donnait un effet bouton */
 	text-transform: capitalize;
       }
 	  .tempoday-white {
@@ -1319,7 +1319,7 @@ class ContentCardLinky extends LitElement {
 	text-align: center;
         background: #ff2700;
     	border: 2px solid var(--divider-color);
-    	box-shadow: var(--ha-card-box-shadow,none);
+    	box-shadow: none; /* l'ombre des cartes du thème (reflet, halo) donnait un effet bouton */
      	text-transform: capitalize;
       }
       .tempo-pie-chart-container {
@@ -1385,7 +1385,7 @@ class ContentCardLinky extends LitElement {
 	text-align: center;
         background: grey;
 	border: 2px solid var(--divider-color);
-	box-shadow: var(--ha-card-box-shadow,none);
+	box-shadow: none; /* l'ombre des cartes du thème (reflet, halo) donnait un effet bouton */
 	background-image: linear-gradient(45deg, #d6d6d6 25%, #dedede 25%, #dedede 50%, #d6d6d6 50%, #d6d6d6 75%, #dedede 75%, #dedede 100%);
 	background-size: 28.28px 28.28px;
 	text-transform: capitalize;
