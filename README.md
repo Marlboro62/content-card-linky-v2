@@ -146,3 +146,19 @@ Bugs et demandes : [issues GitHub](https://github.com/Marlboro62/content-card-li
 ## Merci
 
 Cette carte reprend [content-card-linky](https://github.com/MyElectricalData/content-card-linky) de MyElectricalData, elle-même basée sur le travail de [@saniho](https://github.com/saniho/content-card-linky). Licence MIT.
+
+## Nom du projet et forks
+
+Ce dépôt est la seule source officielle de **Carte Enedis Linky V2** (releases, HACS, support),
+maintenu par [Marlboro62](https://github.com/Marlboro62).
+
+La licence MIT autorise à copier, modifier et redistribuer le code. Si vous publiez une version modifiée :
+
+- gardez les mentions de copyright du fichier [`LICENSE`](https://github.com/Marlboro62/content-card-linky-v2/blob/main/LICENSE) (© Nicolas Bourasseau et © Marlboro62) ;
+- **donnez-lui un autre nom** et d'autres types de carte (`custom:content-card-linky-classic` sont ceux de ce dépôt) :
+  Home Assistant ne peut pas charger deux cartes du même type, et personne ne doit confondre les deux versions dans HACS ;
+- ne la présentez pas comme la version officielle et n'orientez pas vers ce dépôt les demandes
+  de support qui concernent votre version.
+
+Une correction ou une idée ? Les **pull requests** et les **issues** sont les bienvenues ici :
+elles profitent à tous les utilisateurs.
