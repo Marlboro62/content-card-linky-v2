@@ -5,7 +5,7 @@ const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
 
-const CARD_VERSION = "0.3.0";
+const CARD_VERSION = "0.3.1-beta.1";
 // Icône Linky : chemin HACS, remplaçable (page de démonstration)
 const LINKY_ICON = window.CONTENT_CARD_LINKY_CLASSIC_ICON || "/local/community/content-card-linky-v2/icons/linky.svg";
 // Type distinct de content-card-linky-v2, deja pris par la carte Linky New (ancien nom)
@@ -1290,8 +1290,9 @@ class ContentCardLinky extends LitElement {
         color: #009dfa;
 		font-weight: bold;
 	text-align: center;
-        background: var( --ha-card-background, var(--card-background-color, white) );
-    	box-shadow: var(--ha-card-box-shadow,none);
+        /* texte coloré seul : le fond et l'ombre des cartes du thème (dégradé, reflet) donnaient un effet bouton */
+        background: none;
+        box-shadow: none;
 	text-transform: capitalize;
       }
       .tempo-white {
@@ -1374,8 +1375,9 @@ class ContentCardLinky extends LitElement {
         color: #ff2700;
 		font-weight: bold;
 	text-align: center;
-        background: var( --ha-card-background, var(--card-background-color, white) );
-    	box-shadow: var(--ha-card-box-shadow,none);
+        /* texte coloré seul : le fond et l'ombre des cartes du thème (dégradé, reflet) donnaient un effet bouton */
+        background: none;
+        box-shadow: none;
 	text-transform: capitalize;
       }
       .tempo-grey {
