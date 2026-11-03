@@ -36,9 +36,10 @@ Le détail complet est dans les [notes de la version 0.2.0](https://github.com/M
 
 ### Via HACS
 
-1. HACS → menu ⋮ → **Dépôts personnalisés**.
-2. Dépôt : `https://github.com/Marlboro62/content-card-linky-v2`, type **Tableau de bord** (Lovelace).
-3. Installez **Carte Enedis Linky V2**, puis faites Ctrl+F5 dans le navigateur.
+1. Dans HACS, cherchez **Carte Enedis Linky V2** et installez-la.
+2. Faites Ctrl+F5 dans le navigateur.
+
+Si la carte n'apparaît pas encore dans la recherche de HACS, ajoutez le dépôt à la main : menu **⋮** → **Dépôts personnalisés**, adresse `https://github.com/Marlboro62/content-card-linky-v2`, type **Tableau de bord** (Dashboard), puis cherchez **Carte Enedis Linky V2**.
 
 Pour une version bêta, activez d'abord « Afficher les versions bêta » dans la fiche de la carte dans HACS.
 
