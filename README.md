@@ -1,6 +1,6 @@
 # Carte Enedis Linky V2
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/docs/faq/custom_repositories)
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz/)
 [![Release](https://img.shields.io/github/v/release/Marlboro62/content-card-linky-v2?include_prereleases)](https://github.com/Marlboro62/content-card-linky-v2/releases)
 
 La carte Linky **classique** ([content-card-linky](https://github.com/MyElectricalData/content-card-linky)), compatible avec **MyElectricalData V2** (add-on « MyElectricalData new », mode client local) comme avec la V1.
